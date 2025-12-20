@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "vitest";
 import {
   formatConversation,
   isVisibleMessage,
   type ConversationData,
   type ConversationMessage,
-} from "./conversation"
+} from "../src/lib/conversation";
 
 describe("isVisibleMessage", () => {
   const baseMessage: ConversationMessage = {
@@ -14,26 +14,26 @@ describe("isVisibleMessage", () => {
     create_time: 1234567890,
     status: "finished_successfully",
     metadata: {},
-  }
+  };
 
   it("returns true for visible text message with content", () => {
-    expect(isVisibleMessage(baseMessage)).toBe(true)
-  })
+    expect(isVisibleMessage(baseMessage)).toBe(true);
+  });
 
   it("returns false for hidden messages", () => {
     const msg: ConversationMessage = {
       ...baseMessage,
       metadata: { is_visually_hidden_from_conversation: true },
-    }
-    expect(isVisibleMessage(msg)).toBe(false)
-  })
+    };
+    expect(isVisibleMessage(msg)).toBe(false);
+  });
 
   it("returns false for non-text content types", () => {
     const thoughtsMsg: ConversationMessage = {
       ...baseMessage,
       content: { content_type: "thoughts", parts: ["thinking..."] },
-    }
-    expect(isVisibleMessage(thoughtsMsg)).toBe(false)
+    };
+    expect(isVisibleMessage(thoughtsMsg)).toBe(false);
 
     const reasoningMsg: ConversationMessage = {
       ...baseMessage,
@@ -41,34 +41,34 @@ describe("isVisibleMessage", () => {
         content_type: "reasoning_recap",
         content: "Thought for a few seconds",
       },
-    }
-    expect(isVisibleMessage(reasoningMsg)).toBe(false)
-  })
+    };
+    expect(isVisibleMessage(reasoningMsg)).toBe(false);
+  });
 
   it("returns false for messages without parts", () => {
     const msg: ConversationMessage = {
       ...baseMessage,
       content: { content_type: "text" },
-    }
-    expect(isVisibleMessage(msg)).toBe(false)
-  })
+    };
+    expect(isVisibleMessage(msg)).toBe(false);
+  });
 
   it("returns false for messages with empty parts", () => {
     const msg: ConversationMessage = {
       ...baseMessage,
       content: { content_type: "text", parts: [] },
-    }
-    expect(isVisibleMessage(msg)).toBe(false)
-  })
+    };
+    expect(isVisibleMessage(msg)).toBe(false);
+  });
 
   it("returns false for messages with only whitespace", () => {
     const msg: ConversationMessage = {
       ...baseMessage,
       content: { content_type: "text", parts: ["", "   ", "\n"] },
-    }
-    expect(isVisibleMessage(msg)).toBe(false)
-  })
-})
+    };
+    expect(isVisibleMessage(msg)).toBe(false);
+  });
+});
 
 describe("formatConversation", () => {
   it("formats a simple conversation with user and assistant", () => {
@@ -122,9 +122,9 @@ describe("formatConversation", () => {
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
+    const result = formatConversation(data);
     expect(result).toBe(`# Test Conversation
 
 ## User
@@ -138,8 +138,8 @@ Hi there!
 ## User
 
 How are you?
-`)
-  })
+`);
+  });
 
   it("skips system messages", () => {
     const data: ConversationData = {
@@ -192,13 +192,13 @@ How are you?
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
-    expect(result).not.toContain("System prompt")
-    expect(result).toContain("## User")
-    expect(result).toContain("Hello")
-  })
+    const result = formatConversation(data);
+    expect(result).not.toContain("System prompt");
+    expect(result).toContain("## User");
+    expect(result).toContain("Hello");
+  });
 
   it("skips hidden messages", () => {
     const data: ConversationData = {
@@ -251,12 +251,12 @@ How are you?
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
-    expect(result).not.toContain("Hidden message")
-    expect(result).toContain("Visible message")
-  })
+    const result = formatConversation(data);
+    expect(result).not.toContain("Hidden message");
+    expect(result).toContain("Visible message");
+  });
 
   it("skips non-text content types like thoughts and reasoning_recap", () => {
     const data: ConversationData = {
@@ -325,13 +325,13 @@ How are you?
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
-    expect(result).not.toContain("Thought for a few seconds")
-    expect(result).toContain("Question?")
-    expect(result).toContain("Answer!")
-  })
+    const result = formatConversation(data);
+    expect(result).not.toContain("Thought for a few seconds");
+    expect(result).toContain("Question?");
+    expect(result).toContain("Answer!");
+  });
 
   it("handles multi-part messages", () => {
     const data: ConversationData = {
@@ -361,11 +361,11 @@ How are you?
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
-    expect(result).toContain("Part 1\nPart 2\nPart 3")
-  })
+    const result = formatConversation(data);
+    expect(result).toContain("Part 1\nPart 2\nPart 3");
+  });
 
   it("formats the actual ChatGPT response structure correctly", () => {
     const data: ConversationData = {
@@ -455,9 +455,9 @@ How are you?
           children: [],
         },
       },
-    }
+    };
 
-    const result = formatConversation(data)
+    const result = formatConversation(data);
 
     expect(result).toBe(`# 肌白いことわざ
 
@@ -470,6 +470,6 @@ How are you?
 ある。いちばん有名なのはこれ。
 
 - **「色の白いは七難隠す」**
-`)
-  })
-})
+`);
+  });
+});
