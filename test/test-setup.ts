@@ -1,4 +1,3 @@
-import "@testing-library/jest-dom";
 import { fakeBrowser } from "@webext-core/fake-browser";
 import { afterEach, beforeEach } from "vitest";
 
@@ -8,7 +7,6 @@ import { afterEach, beforeEach } from "vitest";
 // Auto-cleanup after each test
 afterEach(() => {
   fakeBrowser.reset();
-  document.body.innerHTML = "";
 });
 
 // Reset state before each test
