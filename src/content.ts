@@ -6,10 +6,18 @@ import { formatConversation, type ConversationData } from "./lib/conversation";
 interface ChatGPTBootstrapData {
   session: {
     accessToken: string;
+    account?: {
+      id: string;
+    };
   };
 }
 
-function getAccessToken(): string | null {
+interface SessionData {
+  accessToken: string;
+  accountId: string | null;
+}
+
+function getSessionData(): SessionData | null {
   const bootstrapScript = document.getElementById("client-bootstrap");
   if (!bootstrapScript) {
     console.error("client-bootstrap script not found");
@@ -20,7 +28,14 @@ function getAccessToken(): string | null {
     const data = JSON.parse(
       bootstrapScript.textContent || "",
     ) as ChatGPTBootstrapData;
-    return data.session?.accessToken ?? null;
+    const accessToken = data.session?.accessToken;
+    if (!accessToken) {
+      return null;
+    }
+    return {
+      accessToken,
+      accountId: data.session?.account?.id ?? null,
+    };
   } catch (e) {
     console.error("Failed to parse bootstrap data:", e);
     return null;
@@ -33,18 +48,23 @@ function getConversationId(): string | null {
 }
 
 async function fetchConversation(
-  accessToken: string,
+  sessionData: SessionData,
   conversationId: string,
 ): Promise<ConversationData | null> {
   try {
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${sessionData.accessToken}`,
+      "Content-Type": "application/json",
+    };
+
+    // Add account ID header for Team plan
+    if (sessionData.accountId) {
+      headers["chatgpt-account-id"] = sessionData.accountId;
+    }
+
     const response = await fetch(
       `https://chatgpt.com/backend-api/conversation/${conversationId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      },
+      { headers },
     );
 
     if (!response.ok) {
@@ -60,9 +80,9 @@ async function fetchConversation(
 }
 
 async function copyConversation() {
-  const accessToken = getAccessToken();
-  if (!accessToken) {
-    alert("Failed to get access token");
+  const sessionData = getSessionData();
+  if (!sessionData) {
+    alert("Failed to get session data");
     return;
   }
 
@@ -72,7 +92,7 @@ async function copyConversation() {
     return;
   }
 
-  const data = await fetchConversation(accessToken, conversationId);
+  const data = await fetchConversation(sessionData, conversationId);
   if (!data) {
     alert("Failed to fetch conversation");
     return;
