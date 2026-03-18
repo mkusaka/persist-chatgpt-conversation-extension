@@ -1,6 +1,7 @@
 // Content script for persist-chatgpt-conversation extension
 // This script runs on ChatGPT pages
 
+import { getConversationIdFromPath } from "./lib/chatgpt-url";
 import { formatConversation, type ConversationData } from "./lib/conversation";
 
 interface ChatGPTBootstrapData {
@@ -43,8 +44,7 @@ function getSessionData(): SessionData | null {
 }
 
 function getConversationId(): string | null {
-  const match = window.location.pathname.match(/^\/c\/([a-f0-9-]+)$/);
-  return match ? match[1] : null;
+  return getConversationIdFromPath(window.location.pathname);
 }
 
 async function fetchConversation(
@@ -160,22 +160,30 @@ function addCopyButton() {
   document.body.appendChild(button);
 }
 
+function removeCopyButton() {
+  document.getElementById("persist-chatgpt-copy-btn")?.remove();
+}
+
+function updateCopyButton() {
+  if (getConversationId()) {
+    addCopyButton();
+    return;
+  }
+
+  removeCopyButton();
+}
+
 function init() {
   console.log("persist-chatgpt-conversation content script loaded");
 
-  // Only add button on conversation pages
-  if (getConversationId()) {
-    addCopyButton();
-  }
+  updateCopyButton();
 
   // Watch for URL changes (SPA navigation)
   let lastUrl = location.href;
   new MutationObserver(() => {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
-      if (getConversationId()) {
-        addCopyButton();
-      }
+      updateCopyButton();
     }
   }).observe(document.body, { childList: true, subtree: true });
 }

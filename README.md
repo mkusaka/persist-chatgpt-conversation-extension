@@ -4,7 +4,7 @@ A Chrome extension to copy ChatGPT conversations to clipboard in Markdown format
 
 ## Usage
 
-1. Open a ChatGPT conversation page (`https://chatgpt.com/c/...`)
+1. Open a ChatGPT conversation page (`https://chatgpt.com/c/...` or `https://chatgpt.com/g/.../c/...`)
 2. Click the "Copy Conversation" button at the bottom left
 3. The conversation is copied to your clipboard in Markdown format
 
