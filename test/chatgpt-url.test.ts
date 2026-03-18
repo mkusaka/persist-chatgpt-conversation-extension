@@ -3,9 +3,9 @@ import { getConversationIdFromPath } from "../src/lib/chatgpt-url";
 
 describe("getConversationIdFromPath", () => {
   it("returns the conversation ID for standard conversation URLs", () => {
-    expect(getConversationIdFromPath("/c/69b9968f-3cdc-83a4-b246-5628f3b6bcdd")).toBe(
-      "69b9968f-3cdc-83a4-b246-5628f3b6bcdd",
-    );
+    expect(
+      getConversationIdFromPath("/c/69b9968f-3cdc-83a4-b246-5628f3b6bcdd"),
+    ).toBe("69b9968f-3cdc-83a4-b246-5628f3b6bcdd");
   });
 
   it("returns the conversation ID for GPT-specific conversation URLs", () => {
@@ -17,9 +17,9 @@ describe("getConversationIdFromPath", () => {
   });
 
   it("accepts trailing slashes", () => {
-    expect(getConversationIdFromPath("/c/69b9968f-3cdc-83a4-b246-5628f3b6bcdd/")).toBe(
-      "69b9968f-3cdc-83a4-b246-5628f3b6bcdd",
-    );
+    expect(
+      getConversationIdFromPath("/c/69b9968f-3cdc-83a4-b246-5628f3b6bcdd/"),
+    ).toBe("69b9968f-3cdc-83a4-b246-5628f3b6bcdd");
   });
 
   it("returns null for non-conversation URLs", () => {

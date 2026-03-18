@@ -8,7 +8,9 @@ interface URLPatternLike {
   exec(input: string | { pathname: string }): URLPatternExecResult | null;
 }
 
-type URLPatternConstructorLike = new (init: { pathname: string }) => URLPatternLike;
+type URLPatternConstructorLike = new (init: {
+  pathname: string;
+}) => URLPatternLike;
 declare const URLPattern: URLPatternConstructorLike;
 
 const conversationPatterns = [
