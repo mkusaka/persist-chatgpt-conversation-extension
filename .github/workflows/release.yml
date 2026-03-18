@@ -19,8 +19,14 @@ jobs:
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm package
-      - name: Create Release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
-        with:
-          files: package.zip
-          generate_release_notes: true
+      - name: Create or update Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" package.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" package.zip \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi
