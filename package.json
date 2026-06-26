@@ -1,7 +1,7 @@
 {
   "name": "persist-chatgpt-conversation-extension",
   "version": "0.0.4",
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@11.9.0",
   "description": "Persist ChatGPT conversations",
   "license": "MIT",
   "repository": {
