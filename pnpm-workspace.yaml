@@ -10,3 +10,5 @@ minimumReleaseAgeExclude:
   - vitest@4.1.11
   # Renovate security update: vite@8.1.6
   - vite@8.1.6
+  # Renovate security update: @vitest/ui@5.0.5
+  - "@vitest/ui@5.0.5"
